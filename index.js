@@ -50,6 +50,17 @@ async function findExpireArticles() {
 	const article = res["rows"][0]["link"];
 	console.log(JSON.stringify(res, null, 2));
 	console.log(article)
+	sendNotification(article);
+}
+
+async function sendNotification (article) {
+	fetch('https://ntfy.sh/crono', {
+		method: 'POST', 
+		body: 'yo read this article already foo!',
+		headers: {
+			'Click': article,
+    	},
+	})
 }
 
 
