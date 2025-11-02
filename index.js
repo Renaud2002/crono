@@ -1,4 +1,4 @@
-import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
+import { ActionRow, Client, Events, GatewayIntentBits, Partials } from "discord.js";
 import "dotenv/config";
 import { Client as pg_client } from 'pg'
 
@@ -14,15 +14,16 @@ const client = new Client({
 
 client.on( Events.ClientReady, readyClient => { 
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	findExpireArticles();
 });
 
 client.login(process.env.DISCORD_TOKEN);
 
-const postgres = new pg_client({
-	database: "articles",
-});
-
 async function insertArticle(link, date) {
+
+	const postgres = new pg_client({
+		database: "articles",
+	});
 
 	await postgres.connect();
 	const text = 'INSERT INTO articles_td(link, date) VALUES($1, $2)';
@@ -34,6 +35,24 @@ async function insertArticle(link, date) {
 
 };
 
+async function findExpireArticles() {
+
+	const postgres = new pg_client({
+		database: "articles",
+	});
+	
+	await postgres.connect();
+	const text = 'SELECT * FROM articles_td WHERE date <= (NOW() - INTERVAL \'2 weeks\')::date;';
+	const res = await postgres.query(text);
+	// res["rows"].forEach(article => {
+	// 	console.log(article["link"]);
+	// });
+	const article = res["rows"][0]["link"];
+	console.log(JSON.stringify(res, null, 2));
+	console.log(article)
+}
+
+
 client.on( 'messageCreate',async  (message) => {
 	if(message.author.bot) return;
 	console.log(`article: ${message.content}`);
@@ -41,12 +60,3 @@ client.on( 'messageCreate',async  (message) => {
 });
 
 
-
-// const postgres = new pg_client({
-// 	database: "article_db",
-// });
-// await postgres.connect();
-// console.log("connected to postgres go to bed!");
-// await postgres.end();
-
-// client.login(process.env.DISCORD_TOKEN);
