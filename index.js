@@ -67,6 +67,7 @@ client.on( 'messageCreate',async  (message) => {
 	await insertArticle(message.content, new Date());
 });
 
+// cron job that runs every day at 3:30 am
 cron.schedule("30 3 * * *", () => {
 	findExpireArticles();
 });
