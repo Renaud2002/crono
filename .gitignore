@@ -1,3 +1,5 @@
 .env
 .git
 node_modules/
+articles_db.dump
+renaud@10.0.0.141
