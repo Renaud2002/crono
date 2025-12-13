@@ -16,7 +16,7 @@ const client = new Client({
 });
 
 client.on( Events.ClientReady, readyClient => { 
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	console.log(`Ready! Logged in as ${readyClient.user.tag} v0`);
 });
 
 client.login(process.env.DISCORD_TOKEN);
